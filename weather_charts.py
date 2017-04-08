@@ -112,26 +112,27 @@ class WeatherCharts(object):
         x = []
         abscisse = []
         y = []
-        for data in city['data']:
+        for data in city.data:
             for i in range(4):
-                abscisse.append(format_date(data['dt']))
-                x.append(data['dt'] + i*3600*6)
+                abscisse.append(data.date)
+                x.append(data.date + i*3600*6) # 4 measures 6 hours appart
             
-            y.append(kelvin_to_celcius(data['temp']['morn']))
-            y.append(kelvin_to_celcius(data['temp']['day']))
-            y.append(kelvin_to_celcius(data['temp']['eve']))
-            y.append(kelvin_to_celcius(data['temp']['night']))
+            y.append(data.t_morn)
+            y.append(data.t_day)
+            y.append(data.t_eve)
+            y.append(data.t_night)
         
         plt.bar(x, y)
         plt.xticks(np.arange(len(abscisse)) + 3600*6, tuple(abscisse))
         plt.ylabel('Celcius') # the '°' character is misinterpreted
-        plt.title('Temperatures in '+ city['city']['name'])
+        plt.title('Temperatures in '+ city.name)
         plt.show()
         
     def graphe_2(self): # Carte 2D
         """
-        Avec l'option -2, le programme affiche l'ensemble des villes par leur position, en mettant en évidence les villes sélectionnées avec une taille plus importante et une couleur différente.
-        matplotlib.pyplot.scatter
+        Triggered by choosing option "-2".
+        Displays cities as a scatter plot based on their locations.
+        Selected cities are highlighted with bigger spots in a different color.
         """
         x = []
         y = []
@@ -140,17 +141,21 @@ class WeatherCharts(object):
         for city in self.city_list:
             y.append(city.latitude)
             x.append(city.longitude)
+            
         plt.scatter(x, y, c='black')
         
         for city in self.city_select:
             y_sel.append(city.latitude)
             x_sel.append(city.longitude)
+            
         plt.scatter(x_sel, y_sel, s = 200, c='red', alpha = 0.5)
         plt.show()
         
     def graphe_3(self): # Surface 3D
         """
-        plot_trisurf
+        Triggered by choosing option "-3".
+        Displays a surface of air pressures, based on the city locations.
+        Considering only the first measure for each city (may not be the same date).
         """
         x = []
         y = []
@@ -169,6 +174,3 @@ class WeatherCharts(object):
         plt.title(self.date_ref)
         plt.show()
         
-
-
-
