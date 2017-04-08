@@ -1,25 +1,22 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 10 17:43:46 2016
 
 @author: timotheeaupetit
 """
-# this must come first
-from __future__ import print_function
 
 # standard library imports
 import json
 from argparse import ArgumentParser
 
-import time
 import numpy as np
 
 #from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import matplotlib.pyplot as plt
 
-from citylist import CityList, City
+from city import City
 
     
 class WeatherCharts(object):
@@ -32,19 +29,26 @@ class WeatherCharts(object):
         
         parser.add_argument ("-c", "--crop", dest='crop', default=None,
                              action='store',
-                             help="Specify a rectangular area as a comma-separated list of 4 numbers for north, east, south, west")
+                             help =  "Specify a rectangular area " +
+                                     "as a comma-separated list of 4 numbers "+
+                                     "for north, east, south, west")
+        
         parser.add_argument ("-n", dest = "names", nargs='*', default=None,
                              action='append',
                              help="cumulative - select cities by their names")
+        
         parser.add_argument ("-1", "--1d", dest='hist_1d', default=None,
                              action='store_true',
                              help="Display a bar chart for the pressure in the first selected city")
+        
         parser.add_argument ("-2", "--2d", dest='plot_2d', default=None,
                              action='store_true',
                              help="Display a 2D diagram of the positions of selected cities")
+        
         parser.add_argument ("-3", "--3d", dest='surf_3d', default=None,
                              action='store_true',
                              help="Display a 3D diagram of the pressure in all cities")
+        
         parser.add_argument ("filename")
         
         self.args = parser.parse_args()
@@ -58,23 +62,23 @@ class WeatherCharts(object):
         self.args.names = cities
 
     def load_cities(self):
-        self.city_list = CityList()
-        self.city_select = CityList()
+        self.city_list = []
+        self.city_select = []
         
         with open(self.args.filename) as f:
             for city_data in f:
-                self.city = City(json.loads(city_data))
+                city = City(json.loads(city_data))
                 
                 if self.args.crop is not None:
-                    if self.in_area(self.city):
-                        self.city_select.add_city(self.city)
+                    if self.in_area(city):
+                        self.city_select.append(city)
                         
                 else:
-                    if self.is_selected(self.city):
-                        self.city_select.add_city(self.city)
+                    if self.is_selected(city):
+                        self.city_select.append(city)
                         
                     else:
-                        self.city_list.add_city(self.city)
+                        self.city_list.append(city)
                     
     def is_selected(self, city):
         return city in self.args.names
@@ -134,13 +138,13 @@ class WeatherCharts(object):
         x_sel = []
         y_sel = []
         for city in self.city_list:
-            y.append(city['city']['coord']['lat'])
-            x.append(city['city']['coord']['lon'])
+            y.append(city.latitude)
+            x.append(city.longitude)
         plt.scatter(x, y, c='black')
         
         for city in self.city_select:
-            y_sel.append(city['city']['coord']['lat'])
-            x_sel.append(city['city']['coord']['lon'])
+            y_sel.append(city.latitude)
+            x_sel.append(city.longitude)
         plt.scatter(x_sel, y_sel, s = 200, c='red', alpha = 0.5)
         plt.show()
         
@@ -153,25 +157,18 @@ class WeatherCharts(object):
         p = []
         self.date_ref = None
         for city in self.city_list:
-            if not self.date_ref:
-                self.date_ref = format_date(city['data'][0]['dt'])
+            if self.date_ref is None:
+                self.date_ref = city.measures[0].date
             
-            p.append(city['data'][0]['pressure'])
-            y.append(city['city']['coord']['lat'])
-            x.append(city['city']['coord']['lon'])
+            p.append(city.measures[0].pressure)
+            y.append(city.latitude)
+            x.append(city.longitude)
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         ax.plot_trisurf(x, y, p, cmap=cm.jet, linewidth=0.2)
         plt.title(self.date_ref)
         plt.show()
         
-def format_date(dt):
-    # *Y*ear *m*onth *d*ay *H*our *M*inute
-    date_format="%Y-%m-%d:%H-%M" # UTC
-    
-    # gmtime pour afficher en heure UTC (formerly GMT)
-    return time.strftime(date_format, time.gmtime(dt))
 
-def kelvin_to_celcius(k_temp):
-    return round(float(k_temp - 273.15), 2)
+
 
