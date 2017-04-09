@@ -1,5 +1,6 @@
 .DS_Store
 data_structure.txt
+__pycache__
 .spyproject
 data/cities_world.json
 data/cities_europe.json
