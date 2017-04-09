@@ -22,7 +22,7 @@ from city import City
 class WeatherCharts(object):
     def __init__(self):
         """
-        constructor creates an ArgumentParser object to implement main interface
+        constructor creates an ArgumentParser object to implement main interface.
         Puts resulting args in self.args
         """
         parser = ArgumentParser()
@@ -39,23 +39,25 @@ class WeatherCharts(object):
         
         parser.add_argument ("-1", "--1d", dest='hist_1d', default=None,
                              action='store_true',
-                             help="Display a bar chart for the pressure in the first selected city")
+                             help=   "Display a bar chart for the pressure " +
+                                     "in the first selected city")
         
         parser.add_argument ("-2", "--2d", dest='plot_2d', default=None,
                              action='store_true',
-                             help="Display a 2D diagram of the positions of selected cities")
+                             help=   "Display a 2D diagram of the positions " +
+                                     "of selected cities")
         
         parser.add_argument ("-3", "--3d", dest='surf_3d', default=None,
                              action='store_true',
-                             help="Display a 3D diagram of the pressure in all cities")
+                             help=   "Display a 3D diagram of the pressure " +
+                                     "in all cities")
         
         parser.add_argument ("filename")
         
         self.args = parser.parse_args()
         
         cities = []
-        if self.args.names:
-            
+        if self.args.names is not None:
             for name in self.args.names:
                 cities.append(name[0])
         
@@ -63,40 +65,36 @@ class WeatherCharts(object):
 
     def load_cities(self):
         self.city_list = []
-        self.city_select = []
+        self.city_selection = []
         
         with open(self.args.filename) as f:
             for city_data in f:
                 city = City(json.loads(city_data))
                 
-                if self.args.crop is not None:
-                    if self.in_area(city):
-                        self.city_select.append(city)
+                if self.args.crop:
+                    if city.in_area(map(float, self.args.crop.split(','))):
+                        self.city_selection.append(city)
                         
                 else:
-                    if self.is_selected(city):
-                        self.city_select.append(city)
+                    if city.is_selected(self.args.names):
+                        self.city_selection.append(city)
                         
                     else:
                         self.city_list.append(city)
-                    
-    def is_selected(self, city):
-        return city in self.args.names
     
-    def in_area(self, city):
-        max_lat, max_lon, min_lat, min_lon = map(float, self.args.crop.split(','))
-        lat = city.latitude
-        lon = city.longitude
-        return ((min_lat <= lat <= max_lat) and (min_lon <= lon <= max_lon))
+    def shout_cities(self):
+#        print(self.args.names) 
+#        print(self.city_selection)
+        print(self.city_list)
 
     def select_graph(self):
-        if self.args.hist_1d:
-            self.graphe_1(self.city_select[0])
+        if self.args.hist_1d is not None:
+            self.graphe_1(self.city_selection[0])
             
-        elif self.args.plot_2d:
+        elif self.args.plot_2d is not None:
             self.graphe_2()
             
-        elif self.args.surf_3d:
+        elif self.args.surf_3d is not None:
             self.graphe_3()
         
         else:
@@ -122,6 +120,7 @@ class WeatherCharts(object):
             y.append(data.t_eve)
             y.append(data.t_night)
         
+#        print(city.data)
         plt.bar(x, y)
         plt.xticks(np.arange(len(abscisse)) + 3600*6, tuple(abscisse))
         plt.ylabel('Celcius') # the '°' character is misinterpreted

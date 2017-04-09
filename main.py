@@ -12,6 +12,7 @@ def main():
     m = WeatherCharts()
     m.load_cities()
     m.select_graph()
+#    m.shout_cities()
     
 if __name__ == '__main__':
     main()
