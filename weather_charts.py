@@ -120,9 +120,9 @@ class WeatherCharts(object):
             y.append(data.t_eve)
             y.append(data.t_night)
         
-#        print(city.data)
+#        print(y)
         plt.bar(x, y)
-        plt.xticks(np.arange(len(abscisse)) + 3600*6, tuple(abscisse))
+#        plt.xticks(np.arange(len(abscisse)) + 3600*6, tuple(abscisse))
         plt.ylabel('Celcius') # the '°' character is misinterpreted
         plt.title('Temperatures in '+ city.name)
         plt.show()
@@ -141,9 +141,9 @@ class WeatherCharts(object):
             y.append(city.latitude)
             x.append(city.longitude)
             
-        plt.scatter(x, y, c='black')
+        plt.scatter(x, y, s=20, c='blue')
         
-        for city in self.city_select:
+        for city in self.city_selection:
             y_sel.append(city.latitude)
             x_sel.append(city.longitude)
             
