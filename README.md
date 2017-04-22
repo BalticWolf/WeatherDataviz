@@ -3,9 +3,9 @@ I worked on this project in the frame of the Python Inria online course (through
 
 As I aspire to be data scientist, I chose the one project requiring visualization.
 The goal was to use the dataviz libraries to represent :
-1: Histograms (temperatures) --> implemented, but the looks are still to be improved
-2: 2D Plot diagrams (towns localizations) --> implemented, but the looks are still to be improved
-3: 3D surface (air pressure variations) --> not implemented
+1: Histograms (temperatures) --> implemented. The overall is fine but the look can be improved
+2: 2D Plot diagrams (towns localizations) --> implemented
+3: 3D surface (air pressure variations) --> not implemented (yet)
 
 USER GUIDE:
 - Open Terminal
