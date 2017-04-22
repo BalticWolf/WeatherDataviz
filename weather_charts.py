@@ -100,7 +100,7 @@ class WeatherCharts(object):
         else:
             print('Choose between 1, 2 or 3 for chart_type\n')
     
-    def graphe_1(self, city): # Histogramme
+    def graphe_1(self, city):
         """
         Triggered by choosing option "-1".
         Displays temperatures variations on a bar chart for the first selected city.
@@ -111,23 +111,25 @@ class WeatherCharts(object):
         abscisse = []
         y = []
         for data in city.data:
+            abscisse.append(data.format_date())
+            
             for i in range(4):
-                abscisse.append(data.date)
-                x.append(data.date + i*3600*6) # 4 measures 6 hours appart
+                x.append(data.date + i*3600*6) # 4 measures, 6 hours appart
             
             y.append(data.t_morn)
             y.append(data.t_day)
             y.append(data.t_eve)
             y.append(data.t_night)
         
-#        print(y)
-        plt.bar(x, y)
-#        plt.xticks(np.arange(len(abscisse)) + 3600*6, tuple(abscisse))
-        plt.ylabel('Celcius') # the '°' character is misinterpreted
+        plt.bar(x, y, 3600*4) # each bar is given a width of 4 hours
+        
+        # max(x) = max(data.date) + 3*3600*6, but we only want max(data.date)
+        plt.xticks(np.linspace(min(x), max(x)-3*3600*6, len(x)/4), tuple(abscisse), rotation = 90)
+        plt.ylabel('Degrees Celcius') # the '°' character is misinterpreted
         plt.title('Temperatures in '+ city.name)
         plt.show()
         
-    def graphe_2(self): # Carte 2D
+    def graphe_2(self):
         """
         Triggered by choosing option "-2".
         Displays cities as a scatter plot based on their locations.
@@ -159,6 +161,7 @@ class WeatherCharts(object):
         x = []
         y = []
         p = []
+        
         self.date_ref = None
         for city in self.city_list:
             if self.date_ref is None:
@@ -167,6 +170,7 @@ class WeatherCharts(object):
             p.append(city.measures[0].pressure)
             y.append(city.latitude)
             x.append(city.longitude)
+        
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         ax.plot_trisurf(x, y, p, cmap=cm.jet, linewidth=0.2)
