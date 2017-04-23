@@ -12,8 +12,7 @@ from argparse import ArgumentParser
 
 import numpy as np
 
-#from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
+
 import matplotlib.pyplot as plt
 
 from city import City
@@ -71,7 +70,7 @@ class WeatherCharts(object):
             for city_data in f:
                 city = City(json.loads(city_data))
                 
-                if self.args.crop:
+                if self.args.crop is not None:
                     if city.in_area(map(float, self.args.crop.split(','))):
                         self.city_selection.append(city)
                         
@@ -158,6 +157,8 @@ class WeatherCharts(object):
         Displays a surface of air pressures, based on the city locations.
         Considering only the first measure for each city (may not be the same date).
         """
+        from mpl_toolkits.mplot3d import Axes3D , axes3d
+#        from matplotlib import cm
         x = []
         y = []
         p = []
@@ -165,15 +166,20 @@ class WeatherCharts(object):
         self.date_ref = None
         for city in self.city_list:
             if self.date_ref is None:
-                self.date_ref = city.measures[0].date
+                self.date_ref = city.data[0].date
             
-            p.append(city.measures[0].pressure)
+            p.append(city.data[0].pressure)
             y.append(city.latitude)
             x.append(city.longitude)
         
         fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        ax.plot_trisurf(x, y, p, cmap=cm.jet, linewidth=0.2)
-        plt.title(self.date_ref)
+#        ax = fig.gca(projection='3d')
+        ax = Axes3D(fig)
+#        ax.plot_trisurf(x, y, p, cmap=cm.jet, linewidth=0.2)
+        X, Y, Z = axes3d.get_test_data(0.05)
+#        cset = ax.contour(x, y, p, extend3d=True)
+        cset = ax.contour(X, Y, Z, 16, extend3d=True)
+        ax.clabel(cset, fontsize=9, inline=1)
+#        plt.title('Pressure on ' + self.date_ref)
         plt.show()
         
