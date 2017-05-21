@@ -5,7 +5,7 @@ As I aspire to be data scientist, I chose the one project requiring visualizatio
 The goal was to use the dataviz libraries to represent :
 1: Histograms (temperatures) --> implemented. The overall is fine but the look can be improved
 2: 2D Plot diagrams (towns localizations) --> implemented
-3: 3D surface (air pressure variations) --> not implemented (yet)
+3: 3D surface (air pressure variations) --> implemented. The overall is fine but the look can be improved
 
 USER GUIDE:
 - Open Terminal
