@@ -158,7 +158,7 @@ class WeatherCharts(object):
         Considering only the first measure for each city (may not be the same date).
         """
         from mpl_toolkits.mplot3d import Axes3D , axes3d
-#        from matplotlib import cm
+        from matplotlib import cm
         x = []
         y = []
         p = []
@@ -173,13 +173,12 @@ class WeatherCharts(object):
             x.append(city.longitude)
         
         fig = plt.figure()
-#        ax = fig.gca(projection='3d')
+        ax = fig.gca(projection='3d')
         ax = Axes3D(fig)
-#        ax.plot_trisurf(x, y, p, cmap=cm.jet, linewidth=0.2)
-        X, Y, Z = axes3d.get_test_data(0.05)
-#        cset = ax.contour(x, y, p, extend3d=True)
-        cset = ax.contour(X, Y, Z, 16, extend3d=True)
-        ax.clabel(cset, fontsize=9, inline=1)
-#        plt.title('Pressure on ' + self.date_ref)
+        ax.plot_trisurf(x, y, p, cmap=cm.jet, linewidth=0.2)
+        # cset = ax.contour(x, y, p, 16, extend3d=True)
+        # cset = ax.contour(X, Y, Z, 16, extend3d=True)
+        # ax.clabel(cset, fontsize=9, inline=1)
+        plt.title('Pressure on ' + str(self.date_ref))
         plt.show()
         

@@ -2,6 +2,8 @@
 data_structure.txt
 __pycache__
 .spyproject
+.idea/
+weather_charts.pyc
 data/cities_world.json
 data/cities_europe.json
 data/cities_france.json

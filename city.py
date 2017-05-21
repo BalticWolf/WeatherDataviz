@@ -19,7 +19,8 @@ class City(object):
         self.latitude = json_data['city']['coord']['lat']
         
         self.data = self.list_measures(json_data['data'])
-    
+
+
     def list_measures(self, json_data):
         """
         Builds a list of "Measure" objects.
@@ -29,21 +30,8 @@ class City(object):
             measures.append(Measure(measure))
         
         return measures
-    
-#    def temperature_sequence(self):
-#        """
-#        Builds a sequence of temperatures
-#        """
-#        temperatures = []
-#        
-#        for measure in self.data:
-#            temperatures.append(measure.t_morn)
-#            temperatures.append(measure.t_day)
-#            temperatures.append(measure.t_eve)
-#            temperatures.append(measure.t_night)
-#        
-#        return temperatures
-    
+
+
     def in_area(self, lat_1, lon_1, lat_2, lon_2):
         """
         Returns true if the city is located in the area, false otherwise.
@@ -68,20 +56,23 @@ class City(object):
             max_lon = lon_1       
         
         return ((min_lat <= lat <= max_lat) and (min_lon <= lon <= max_lon))
-    
+
+
     def is_selected(self, city_list):
         """
         Returns true if a city is in found in city_list, false otherwise
         """
         return self.name in city_list  
-    
+
+
     def __repr__(self):
         return self.name + ' (' + self.country + ')'
-    
+
+
 ###############################################################################
 class Measure(object):
     """
-    A Measure contain weather data taken at a certain time ('dt')
+    A Measure contains weather data taken at a certain time ('dt')
     """
     def __init__(self, json_data):
         # self.clouds = json_data['clouds']  # Not used
@@ -101,6 +92,7 @@ class Measure(object):
         
         # self.weather = json_data['weather'] # Not used
 
+
     def format_date(self):
         """
         Converts a date (given in seconds since the Epoch) 
@@ -109,13 +101,15 @@ class Measure(object):
         pattern="%Y-%m-%d:%H-%M" # UTC
         
         return time.strftime(pattern, time.gmtime(self.date))
-    
+
+
     def kelvin_to_celcius(k_temp):
         """
         Converts kelvin degrees to celcius degrees.
         The scale offset is equal to 273.15°.
         """
         return round(float(k_temp - 273.15), 2)
-    
+
+
     def __repr__(self):
         return 'Measured on: ' + Measure.format_date(self.date)
